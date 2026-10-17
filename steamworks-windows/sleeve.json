@@ -1,0 +1,300 @@
+{
+  "name": "Steamworks emulator (Windows)",
+  "description": "Replaces Windows Steam API libraries with the pinned emulator; does not unwrap executables.",
+  "runtimes": {
+    "vent": {
+      "name": "Vent",
+      "license": "LGPL-3.0-or-later",
+      "source": "https://github.com/Detanup01/gbe_fork/tree/release-2026_09_27",
+      "pins": [
+        {
+          "version": "gbe-fork-2026-09-27",
+          "platform": "windows",
+          "import": "fetch",
+          "release": "https://github.com/Detanup01/gbe_fork/releases/download/release-2026_09_27/emu-win-release-vs22.7z",
+          "releaseSha256": "300186c34f49a9ea75b33ce2af299267cc1dad0225cf45e81a229578d4e11c85",
+          "treeSha256": "3cdb86303c72502a89b1a7d90fcb321fa0a0049a75f8a4730260979d2e85e26d",
+          "root": "vent-win",
+          "program": "vent-win/steam_api64.dll",
+          "deliverAs": "vent-win",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/vent-gbe-fork-2026-09-27-windows.zip",
+          "archiveSha256": "9292ddbb793c4d28c323e9845fb234747d3a08b95e0a78fcc248d26a52bbf4ea"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "how-windows": {
+      "file": "templates/how-to-play.txt",
+      "escape": "text"
+    },
+    "appid": {
+      "file": "templates/steam_appid.txt",
+      "escape": "text"
+    },
+    "local-save": {
+      "file": "templates/local_save.txt",
+      "escape": "text"
+    },
+    "user-ini": {
+      "file": "templates/configs.user.ini",
+      "escape": "ini"
+    },
+    "main-ini": {
+      "file": "templates/configs.main.ini",
+      "escape": "ini"
+    },
+    "app-ini": {
+      "file": "templates/configs.app.ini",
+      "escape": "ini"
+    },
+    "overlay-ini": {
+      "file": "templates/configs.overlay.ini",
+      "escape": "ini"
+    },
+    "keep": {
+      "file": "templates/keep.txt",
+      "escape": "text"
+    }
+  },
+  "detect": {
+    "select": "all",
+    "profiles": [
+      {
+        "name": "Steamworks library",
+        "anchor": {
+          "file": "**/steam_api{,64}.dll"
+        },
+        "checks": [
+          {
+            "magic": "{{anchor.path}}",
+            "at": 0,
+            "ascii": "MZ",
+            "evidence": true,
+            "label": "Windows DLL"
+          },
+          {
+            "text": "{{anchor.dir}}/steam_appid.txt",
+            "regex": "([0-9]+)",
+            "capture": "appid",
+            "optional": true,
+            "label": "steam_appid.txt beside the library"
+          },
+          {
+            "text": "steam_appid.txt",
+            "regex": "([0-9]+)",
+            "capture": "rootappid",
+            "optional": true,
+            "label": "steam_appid.txt in the game folder"
+          }
+        ],
+        "params": {
+          "kind": "library",
+          "dir": {
+            "path": "{{anchor.dir}}"
+          },
+          "appid": "{{#if build.appId}}{{build.appId}}{{else}}{{#if cap.appid}}{{cap.appid}}{{else}}{{cap.rootappid|default:\"480\"}}{{/if}}{{/if}}"
+        }
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}}",
+    "clients": {
+      "windows": {
+        "runtimes": [
+          "vent"
+        ],
+        "entries": [
+          {
+            "template": "how-windows",
+            "to": "How to play (Vent-Win).txt",
+            "eol": "crlf"
+          },
+          {
+            "original": "",
+            "to": "game",
+            "exclude": [
+              "**/steam_api.dll",
+              "**/steam_api64.dll",
+              "**/steam_appid.txt",
+              "**/local_save.txt",
+              "**/steam_settings/**"
+            ]
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "runtime": "vent",
+            "to": "game/{{c.dir}}",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "appid",
+            "to": "game/{{c.dir}}/steam_appid.txt",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "appid",
+            "to": "game/{{c.dir}}/steam_settings/steam_appid.txt",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "local-save",
+            "to": "game/{{c.dir}}/local_save.txt",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "user-ini",
+            "to": "game/{{c.dir}}/steam_settings/configs.user.ini",
+            "eol": "crlf",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "main-ini",
+            "to": "game/{{c.dir}}/steam_settings/configs.main.ini",
+            "eol": "crlf",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "app-ini",
+            "to": "game/{{c.dir}}/steam_settings/configs.app.ini",
+            "eol": "crlf",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "overlay-ini",
+            "to": "game/{{c.dir}}/steam_settings/configs.overlay.ini",
+            "eol": "crlf",
+            "if": "c.kind == \"library\""
+          },
+          {
+            "each": "candidates",
+            "as": "c",
+            "template": "keep",
+            "to": "game/{{c.dir}}/saves/.keep",
+            "if": "c.kind == \"library\""
+          }
+        ]
+      }
+    }
+  },
+  "format": 2,
+  "id": "steamworks-windows",
+  "version": 1,
+  "preference": 0,
+  "scripts": {},
+  "fixtures": [
+    {
+      "name": "Complete capability data (windows)",
+      "client": "windows",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86_64"
+        ],
+        "huffun-sleeves:steamworks": [
+          "required"
+        ]
+      },
+      "files": {
+        "program.exe": {
+          "hex": "4d5a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005045000064860100000000000000000000000000e00000000b010000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002e74657874000000001000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "steam_api64.dll": {
+          "hex": "4d5a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005045000064860100000000000000000000000000e00000000b010000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002e74657874000000001000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [
+          [
+            "steamworks-windows"
+          ]
+        ],
+        "listing": [
+          "How to play (Vent-Win).txt\tgenerated\t0644",
+          "game/local_save.txt\tgenerated\t0644",
+          "game/program.exe\toriginal\t0644",
+          "game/saves/.keep\tgenerated\t0644",
+          "game/steam_api64.dll\truntime\t0644",
+          "game/steam_appid.txt\tgenerated\t0644",
+          "game/steam_settings/configs.app.ini\tgenerated\t0644",
+          "game/steam_settings/configs.main.ini\tgenerated\t0644",
+          "game/steam_settings/configs.overlay.ini\tgenerated\t0644",
+          "game/steam_settings/configs.user.ini\tgenerated\t0644",
+          "game/steam_settings/steam_appid.txt\tgenerated\t0644",
+          "licenses/Vent.txt\tgenerated\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "windows",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86_64"
+        ],
+        "huffun-sleeves:steamworks": [
+          "required"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "accepts": {
+    "os": {
+      "any": [
+        "windows"
+      ]
+    },
+    "steamworks": {
+      "any": [
+        "required"
+      ]
+    }
+  },
+  "produces": {
+    "steamworks": {
+      "drop": true
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{{title}}
+
+This is for a development build. Use it at your own risk.
+
+Any Steamworks library inside the game folder (steam_api.dll, steam_api64.dll) is already the pinned emulator, with offline settings in a steam_settings folder beside it. Start the game from the game folder the way you normally would, by opening its .exe.
+
+Before you extract the ZIP, right-click it, choose Properties, tick Unblock, and press OK. Otherwise Windows marks every extracted file as downloaded and may warn before the game starts.
+
+For a game that uses Steamworks, saves are in the saves folder next to the emulator library.

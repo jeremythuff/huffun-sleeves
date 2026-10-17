@@ -1,0 +1,44 @@
+[
+  {
+    "arch": "x86_64",
+    "pkg": "innoextract",
+    "url": "https://packages.macports.org/innoextract/innoextract-1.9_2.darwin_20.x86_64.tbz2",
+    "sha256": "a1db601b5008ecd33fd0660ecfeca72e065c62b7676afc3d08543ab3a80d912d"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "boost181",
+    "url": "https://packages.macports.org/boost181/boost181-1.81.0_15+no_single+no_static+python314.darwin_20.x86_64.tbz2",
+    "sha256": "78ed05a75616a0eca96b6703abaf237d9c73ba3c857253898167b59f0b00271d"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "xz",
+    "url": "https://packages.macports.org/xz/xz-5.8.4_0.darwin_20.x86_64.tbz2",
+    "sha256": "b4704e48a31b25b67b09cdb1e2418474e06127df35be2c4d0c93343f39ad30db"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "libiconv",
+    "url": "https://packages.macports.org/libiconv/libiconv-1.19_0.darwin_20.x86_64.tbz2",
+    "sha256": "9c3b701c4463160dee2191558ff4d048cb5f584cd3e8ca1cc717d25c686ed74b"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "zlib",
+    "url": "https://packages.macports.org/zlib/zlib-1.3.2_0.darwin_20.x86_64.tbz2",
+    "sha256": "d409663adfb71f160269ab9a4be4702f2c0c8c2365d59706ab1ff96f12d86aff"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "zstd",
+    "url": "https://packages.macports.org/zstd/zstd-1.5.7_0.darwin_20.x86_64.tbz2",
+    "sha256": "00c4e817b8bff84d935f63589667a50182a56e9b79b5757ae0a8e62fc13c0eb1"
+  },
+  {
+    "arch": "x86_64",
+    "pkg": "bzip2",
+    "url": "https://packages.macports.org/bzip2/bzip2-1.0.8_1.darwin_20.x86_64.tbz2",
+    "sha256": "76180f30534ce5287ca6efe5df03928a2330c65ddbb7557de0b3a01860c8adf4"
+  }
+]

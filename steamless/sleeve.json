@@ -1,0 +1,204 @@
+{
+  "format": 2,
+  "id": "steamless",
+  "version": 1,
+  "name": "Steamless",
+  "description": "Removes a detected SteamStub wrapper from the selected PE program before delivery.",
+  "accepts": {
+    "drm": {
+      "any": [
+        "steamstub"
+      ]
+    }
+  },
+  "produces": {
+    "drm": {
+      "drop": true
+    }
+  },
+  "tools": {
+    "steamless": {
+      "name": "Steamless",
+      "license": "CC-BY-NC-ND-4.0",
+      "source": "https://github.com/atom0s/Steamless/tree/v3.1.0.5",
+      "pins": [
+        {
+          "version": "3.1.0.5",
+          "platform": "windows",
+          "host": "mono",
+          "import": "fetch",
+          "release": "https://github.com/atom0s/Steamless/releases/download/v3.1.0.5/Steamless.v3.1.0.5.-.by.atom0s.zip",
+          "releaseSha256": "e3e2d22e098ff3fb359b2876aa2bed9596f0501e6ff588cbffae90a76d2dc4f5",
+          "treeSha256": "898196fd69e0b59e17afc1489ae606a0c68c14c3a5c5691f44b9d5bff8d39935",
+          "root": "steamless",
+          "program": "steamless/Steamless.CLI.exe",
+          "libraryPath": [
+            "steamless/Plugins"
+          ],
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/steamless-3.1.0.5-windows.zip",
+          "archiveSha256": "3513e41f03eb4a3a7df092fc4ae9e02e5e41f173bcfe85288fb80c665b760371"
+        }
+      ]
+    }
+  },
+  "templates": {},
+  "detect": {
+    "profiles": [
+      {
+        "name": "Wrapped PE program",
+        "anchor": {
+          "file": "**/*.exe"
+        },
+        "checks": [
+          {
+            "pe": "{{anchor.path}}",
+            "sections": [
+              ".bind"
+            ]
+          }
+        ],
+        "params": {
+          "program": {
+            "path": "{{anchor.path}}"
+          }
+        },
+        "label": "{{params.program}}"
+      }
+    ]
+  },
+  "scripts": {
+    "preinstall": [
+      {
+        "id": "unwrap",
+        "host": {
+          "tool": "steamless"
+        },
+        "args": [
+          "--quiet",
+          "{{params.program}}"
+        ],
+        "inputs": [
+          "{{params.program}}"
+        ],
+        "outputs": [
+          {
+            "path": "{{params.program}}.unpacked.exe",
+            "from": "{{params.program}}",
+            "verify": {
+              "pe": {
+                "removes": [
+                  ".bind"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}}",
+    "clients": {
+      "windows": {
+        "entries": [
+          {
+            "original": "",
+            "to": "game"
+          },
+          {
+            "preinstall": "unwrap",
+            "from": "{{params.program}}.unpacked.exe",
+            "to": "game/{{params.program}}",
+            "replace": true
+          }
+        ]
+      },
+      "macos": {
+        "entries": [
+          {
+            "original": "",
+            "to": "game"
+          },
+          {
+            "preinstall": "unwrap",
+            "from": "{{params.program}}.unpacked.exe",
+            "to": "game/{{params.program}}",
+            "replace": true
+          }
+        ]
+      }
+    }
+  },
+  "fixtures": [
+    {
+      "name": "Complete capability data (windows)",
+      "client": "windows",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:drm": [
+          "steamstub"
+        ]
+      },
+      "files": {
+        "program.exe": {
+          "hex": "4d5a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000504500004c010200000000000000000000000000e00000000b010000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002e7465787400000000100000001000000000000000000000000000000000000000000000000000002e62696e64000000001000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "data.bin": {
+          "text": "data"
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86"
+          ]
+        },
+        "paths": [
+          [
+            "steamless"
+          ]
+        ],
+        "listing": [
+          "game/data.bin\toriginal\t0644",
+          "game/program.exe\tpreinstall\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "windows",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:drm": [
+          "steamstub"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ]
+}

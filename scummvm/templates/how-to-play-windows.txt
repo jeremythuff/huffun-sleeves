@@ -1,0 +1,10 @@
+{{title}} - plays with ScummVM {{rt.scummvm.version}}
+
+1. Double-click "Play {{title}}.cmd".
+   If Windows says it protected your PC, click "More info", then
+   "Run anyway".
+2. Your saves are kept in the "saves" folder next to it.
+
+game\ holds the game's original files from your huFFuη archive, unchanged.
+ScummVM is free software ({{rt.scummvm.license}}): https://www.scummvm.org/
+Its license texts are in the {{rt.scummvm.dir}} folder (COPYING*.txt).

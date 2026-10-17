@@ -1,0 +1,323 @@
+{
+  "name": "Steamworks emulator (Mac)",
+  "description": "Replaces a Mac application Steam API library with the pinned emulator.",
+  "runtimes": {
+    "vent": {
+      "name": "Vent",
+      "license": "LicenseRef-Vent",
+      "source": "https://example.invalid/vent/source",
+      "pins": [
+        {
+          "version": "2",
+          "platform": "macos",
+          "import": "fetch",
+          "release": "https://example.invalid/vent/source",
+          "releaseSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "treeSha256": "429ca5a34127316d6ffc292c01e02839068cb2f07d23a5440ca52cbd4fa83df5",
+          "root": "vent-mac",
+          "program": "vent-mac/libsteam_api.dylib",
+          "deliverAs": "vent-mac",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/vent-2-macos.zip",
+          "archiveSha256": "51112ec109ed93d6449d708caef550e49690d20eb60a94680ac36498a500fd94"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "launch-macos": {
+      "file": "templates/launch-macos.command",
+      "escape": "sh"
+    },
+    "how-macos": {
+      "file": "templates/how-to-play.txt",
+      "escape": "text"
+    },
+    "appid": {
+      "file": "templates/steam_appid.txt",
+      "escape": "text"
+    },
+    "local-save": {
+      "file": "templates/local_save.txt",
+      "escape": "text"
+    },
+    "user-ini": {
+      "file": "templates/configs.user.ini",
+      "escape": "ini"
+    },
+    "main-ini": {
+      "file": "templates/configs.main.ini",
+      "escape": "ini"
+    },
+    "app-ini": {
+      "file": "templates/configs.app.ini",
+      "escape": "ini"
+    },
+    "overlay-ini": {
+      "file": "templates/configs.overlay.ini",
+      "escape": "ini"
+    },
+    "keep": {
+      "file": "templates/keep.txt",
+      "escape": "text"
+    }
+  },
+  "detect": {
+    "select": "one",
+    "profiles": [
+      {
+        "name": "Steam Mac application",
+        "anchor": {
+          "dir": "**/*.app"
+        },
+        "base": "{{anchor.path}}",
+        "checks": [
+          {
+            "glob": "{{base}}/**/libsteam_api.dylib",
+            "pick": "first",
+            "evidence": true,
+            "capture": "steamlib",
+            "label": "Steamworks library"
+          },
+          {
+            "magic": "{{cap.steamlib}}",
+            "at": 0,
+            "hex": "cffaedfe",
+            "optional": true,
+            "label": "thin Mach-O Steamworks library"
+          },
+          {
+            "magic": "{{cap.steamlib}}",
+            "at": 0,
+            "hex": "cafebabe",
+            "optional": true,
+            "label": "universal Mach-O Steamworks library"
+          },
+          {
+            "text": "{{cap.steamlib|dirname}}/steam_appid.txt",
+            "regex": "([0-9]+)",
+            "capture": "appid",
+            "optional": true,
+            "label": "steam_appid.txt"
+          },
+          {
+            "file": "{{base}}/Contents/Info.plist",
+            "minSize": 16,
+            "capture": "plist",
+            "label": "Info.plist"
+          },
+          {
+            "text": "{{cap.plist}}",
+            "regex": "<key>CFBundleExecutable</key>\\s*<string>([^<]+)</string>",
+            "capture": "exeName",
+            "label": "CFBundleExecutable"
+          },
+          {
+            "file": "{{base}}/Contents/MacOS/{{cap.exeName}}",
+            "minSize": 16,
+            "capture": "exe",
+            "label": "Mac executable"
+          },
+          {
+            "macho": "{{cap.exe}}",
+            "arch": [
+              "x86_64",
+              "arm64"
+            ],
+            "scripts": true,
+            "label": "64-bit Mac executable"
+          }
+        ],
+        "params": {
+          "app": {
+            "path": "{{anchor.path}}"
+          },
+          "exe": {
+            "path": "{{cap.exe}}"
+          },
+          "steamlib": {
+            "path": "{{cap.steamlib}}"
+          },
+          "appid": {
+            "text": "{{#if build.appId}}{{build.appId}}{{else}}{{cap.appid|default:\"480\"}}{{/if}}"
+          }
+        }
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}} (Vent-Mac)",
+    "clients": {
+      "macos": {
+        "runtimes": [
+          "vent"
+        ],
+        "entries": [
+          {
+            "template": "launch-macos",
+            "to": "Play {{title}}.command",
+            "executable": true
+          },
+          {
+            "template": "how-macos",
+            "to": "How to play.txt"
+          },
+          {
+            "original": "",
+            "to": "game",
+            "exclude": [
+              "**/libsteam_api.dylib",
+              "**/steam_appid.txt",
+              "**/local_save.txt",
+              "**/steam_settings/**"
+            ]
+          },
+          {
+            "runtime": "vent",
+            "to": "game/{{params.steamlib|dirname}}"
+          },
+          {
+            "template": "appid",
+            "to": "game/{{params.steamlib|dirname}}/steam_appid.txt"
+          },
+          {
+            "template": "appid",
+            "to": "game/{{params.steamlib|dirname}}/steam_settings/steam_appid.txt"
+          },
+          {
+            "template": "local-save",
+            "to": "game/{{params.steamlib|dirname}}/local_save.txt"
+          },
+          {
+            "template": "user-ini",
+            "to": "game/{{params.steamlib|dirname}}/steam_settings/configs.user.ini"
+          },
+          {
+            "template": "main-ini",
+            "to": "game/{{params.steamlib|dirname}}/steam_settings/configs.main.ini"
+          },
+          {
+            "template": "app-ini",
+            "to": "game/{{params.steamlib|dirname}}/steam_settings/configs.app.ini"
+          },
+          {
+            "template": "overlay-ini",
+            "to": "game/{{params.steamlib|dirname}}/steam_settings/configs.overlay.ini"
+          },
+          {
+            "template": "keep",
+            "to": "game/{{params.steamlib|dirname}}/saves/.keep"
+          }
+        ]
+      }
+    }
+  },
+  "format": 2,
+  "id": "steamworks-macos",
+  "version": 1,
+  "preference": 0,
+  "scripts": {},
+  "fixtures": [
+    {
+      "name": "Complete capability data (macos)",
+      "client": "macos",
+      "state": {
+        "os": [
+          "macos"
+        ],
+        "arch": [
+          "x86_64"
+        ],
+        "huffun-sleeves:steamworks": [
+          "required"
+        ]
+      },
+      "files": {
+        "Program.app/Contents/Info.plist": {
+          "text": "<plist><dict><key>CFBundleExecutable</key><string>program</string></dict></plist>"
+        },
+        "Program.app/Contents/MacOS/program": {
+          "hex": "cffaedfe07000001030000000200000000000000000000000000000000000000"
+        },
+        "Program.app/Contents/libsteam_api.dylib": {
+          "hex": "cffaedfe07000001030000000600000000000000000000000000000000000000"
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [
+          [
+            "steamworks-macos"
+          ]
+        ],
+        "listing": [
+          "How to play.txt\tgenerated\t0644",
+          "Play Synthetic.command\tgenerated\t0755",
+          "game/Program.app/Contents/Info.plist\toriginal\t0644",
+          "game/Program.app/Contents/MacOS/program\toriginal\t0644",
+          "game/Program.app/Contents/libsteam_api.dylib\truntime\t0644",
+          "game/Program.app/Contents/local_save.txt\tgenerated\t0644",
+          "game/Program.app/Contents/saves/.keep\tgenerated\t0644",
+          "game/Program.app/Contents/steam_appid.txt\tgenerated\t0644",
+          "game/Program.app/Contents/steam_settings/configs.app.ini\tgenerated\t0644",
+          "game/Program.app/Contents/steam_settings/configs.main.ini\tgenerated\t0644",
+          "game/Program.app/Contents/steam_settings/configs.overlay.ini\tgenerated\t0644",
+          "game/Program.app/Contents/steam_settings/configs.user.ini\tgenerated\t0644",
+          "game/Program.app/Contents/steam_settings/steam_appid.txt\tgenerated\t0644",
+          "licenses/Vent.txt\tgenerated\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "macos",
+      "state": {
+        "os": [
+          "macos"
+        ],
+        "arch": [
+          "x86_64"
+        ],
+        "huffun-sleeves:steamworks": [
+          "required"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "accepts": {
+    "os": {
+      "any": [
+        "macos"
+      ]
+    },
+    "steamworks": {
+      "any": [
+        "required"
+      ]
+    }
+  },
+  "produces": {
+    "steamworks": {
+      "drop": true
+    }
+  }
+}

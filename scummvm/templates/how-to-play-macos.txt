@@ -1,0 +1,14 @@
+{{title}} - plays with ScummVM {{rt.scummvm.version}}
+
+1. Double-click "Play {{title}}.command".
+   If macOS says it cannot be opened because it came from the internet:
+   - macOS 14 or earlier: Control-click it, choose Open, then Open again.
+   - macOS 15 or later: try once, then open System Settings >
+     Privacy & Security and click "Open Anyway".
+   - Any version: in Terminal, type bash and a space, drag the file into
+     the window, and press Return.
+2. Your saves are kept in the "saves" folder next to it.
+
+game/ holds the game's original files from your huFFuη archive, unchanged.
+ScummVM is free software ({{rt.scummvm.license}}): https://www.scummvm.org/
+Its license texts are inside {{rt.scummvm.dir}}/Contents/Resources.
