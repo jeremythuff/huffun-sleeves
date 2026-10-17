@@ -32,14 +32,14 @@ GAME="$HERE/game/$PRIMARY"
 [ -f "$GAME" ] || { printf '%s\n' "Missing the game."; exit 1; }
 export WINEPREFIX="$HERE/prefix"
 export WINEDEBUG=-all
-if [ -f "$HERE/.huffun-directdraw" ]; then
+if [ -f "$HERE/.huffun-directdraw" ] || [ -f "$HERE/game/.huffun-directdraw" ]; then
   export WINEDLLOVERRIDES="ddraw=b"
 fi
 if [ ! -f "$WINEPREFIX/system.reg" ]; then
   printf '%s\n' "Setting up Wine for this game (first start only, about a minute)..."
   "$WINE" wineboot --init || { printf '%s\n' "Wine could not set up its environment."; exit 1; }
 fi
-if [ -f "$HERE/.huffun-directdraw" ]; then
+if [ -f "$HERE/.huffun-directdraw" ] || [ -f "$HERE/game/.huffun-directdraw" ]; then
   "$WINE" reg add "HKCU\\Software\\Wine\\Direct3D" /v renderer /t REG_SZ /d gdi /f >/dev/null 2>&1 || exit 1
 fi
 cd "$(dirname "$GAME")" || exit 1
