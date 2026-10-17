@@ -1,7 +1,478 @@
 {
   "format": 2,
   "name": "huffun-sleeves",
-  "facts": {},
-  "detectors": [],
-  "sleeves": []
+  "facts": {
+    "drm": {
+      "description": "Executable wrapping that must be removed.",
+      "values": {
+        "steamstub": "A PE program contains a .bind section."
+      }
+    },
+    "steamworks": {
+      "description": "An unresolved Steamworks runtime dependency.",
+      "values": {
+        "required": "A real Steam API library is archived."
+      }
+    },
+    "graphics": {
+      "description": "Graphics interfaces imported by a program.",
+      "values": {
+        "directdraw": "The PE imports ddraw.dll."
+      }
+    },
+    "engine": {
+      "description": "Data requiring a compatible interpreter.",
+      "values": {
+        "scumm": "SCUMM data checks pass.",
+        "fallout": "Classic RPG data format one.",
+        "fallout2": "Classic RPG data format two."
+      }
+    },
+    "installer": {
+      "description": "Archived installer payloads requiring a client install step.",
+      "values": {
+        "inno": "A Windows offline setup program.",
+        "pkg": "A macOS flat installer package."
+      }
+    }
+  },
+  "detectors": [
+    {
+      "id": "wrapped-pe",
+      "profile": {
+        "anchor": {
+          "file": "**/*.exe"
+        },
+        "checks": [
+          {
+            "pe": "{{anchor.path}}",
+            "sections": [
+              ".bind"
+            ]
+          }
+        ]
+      },
+      "facts": {
+        "drm": [
+          "steamstub"
+        ]
+      }
+    },
+    {
+      "id": "windows-api",
+      "profile": {
+        "anchor": {
+          "file": "**/steam_api{,64}.dll"
+        },
+        "checks": [
+          {
+            "pe": "{{anchor.path}}"
+          }
+        ]
+      },
+      "facts": {
+        "steamworks": [
+          "required"
+        ]
+      }
+    },
+    {
+      "id": "mac-api",
+      "profile": {
+        "anchor": {
+          "file": "**/libsteam_api.dylib"
+        },
+        "checks": [
+          {
+            "macho": "{{anchor.path}}"
+          }
+        ]
+      },
+      "facts": {
+        "steamworks": [
+          "required"
+        ]
+      }
+    },
+    {
+      "id": "directdraw",
+      "profile": {
+        "anchor": {
+          "file": "**/*.exe"
+        },
+        "checks": [
+          {
+            "peImports": "{{anchor.path}}",
+            "includes": [
+              "ddraw.dll"
+            ]
+          }
+        ]
+      },
+      "facts": {
+        "graphics": [
+          "directdraw"
+        ]
+      }
+    },
+    {
+      "id": "scumm-data-1",
+      "profile": {
+        "anchor": {
+          "dir": "**/*.app"
+        },
+        "base": "{{anchor.path}}/Contents/Resources",
+        "checks": [
+          {
+            "file": "{{base}}/901.LFL",
+            "evidence": true,
+            "capture": "key"
+          },
+          {
+            "file": "{{base}}/902.LFL",
+            "evidence": true
+          },
+          {
+            "file": "{{base}}/903.LFL",
+            "evidence": true
+          },
+          {
+            "file": "{{base}}/904.LFL",
+            "evidence": true
+          },
+          {
+            "file": "{{base}}/DISK01.LEC",
+            "evidence": true
+          },
+          {
+            "file": "{{base}}/CDDA.SOU",
+            "evidence": true
+          },
+          {
+            "file": "{{anchor.path}}/Contents/MacOS/Loom",
+            "capture": "exe"
+          }
+        ],
+        "params": {
+          "target": "scumm:loom",
+          "dataRoot": "{{cap.key|dirname}}",
+          "indexExecutable": "{{cap.exe}}"
+        }
+      },
+      "facts": {
+        "engine": [
+          "scumm"
+        ]
+      }
+    },
+    {
+      "id": "scumm-data-2",
+      "profile": {
+        "anchor": {
+          "dir": "**/*.app"
+        },
+        "base": "{{anchor.path}}/Contents/Resources",
+        "checks": [
+          {
+            "file": "{{base}}/01.LFL",
+            "evidence": true,
+            "capture": "key"
+          },
+          {
+            "file": "{{base}}/02.LFL",
+            "evidence": true
+          },
+          {
+            "count": "{{base}}/**/[0-9][0-9].LFL",
+            "min": 20,
+            "label": "room files (at least 20)"
+          },
+          {
+            "file": "{{anchor.path}}/Contents/MacOS/The Last Crusade",
+            "capture": "exe"
+          }
+        ],
+        "params": {
+          "target": "scumm:indy3",
+          "dataRoot": "{{cap.key|dirname}}",
+          "indexExecutable": "{{cap.exe}}"
+        }
+      },
+      "facts": {
+        "engine": [
+          "scumm"
+        ]
+      }
+    },
+    {
+      "id": "scumm-data-3",
+      "profile": {
+        "anchor": {
+          "dir": "**/*.app"
+        },
+        "base": "{{anchor.path}}/Contents/Resources",
+        "checks": [
+          {
+            "file": "{{base}}/ATLANTIS.001",
+            "evidence": true,
+            "capture": "key"
+          },
+          {
+            "file": "{{base}}/MONSTER.SOU",
+            "evidence": true
+          },
+          {
+            "file": "{{anchor.path}}/Contents/MacOS/The Fate of Atlantis",
+            "capture": "exe"
+          }
+        ],
+        "params": {
+          "target": "scumm:atlantis",
+          "dataRoot": "{{cap.key|dirname}}",
+          "indexExecutable": "{{cap.exe}}"
+        }
+      },
+      "facts": {
+        "engine": [
+          "scumm"
+        ]
+      }
+    },
+    {
+      "id": "scumm-data-4",
+      "profile": {
+        "anchor": {
+          "dir": "**/*.app"
+        },
+        "base": "{{anchor.path}}/Contents/Resources",
+        "checks": [
+          {
+            "file": "{{base}}/DIG.LA1",
+            "evidence": true,
+            "capture": "key"
+          },
+          {
+            "file": "{{base}}/DIGMUSIC.BUN",
+            "evidence": true
+          },
+          {
+            "file": "{{base}}/DIGVOICE.BUN",
+            "evidence": true
+          },
+          {
+            "dir": "{{base}}/VIDEO"
+          },
+          {
+            "file": "{{anchor.path}}/Contents/MacOS/The Dig",
+            "capture": "exe"
+          }
+        ],
+        "params": {
+          "target": "scumm:dig",
+          "dataRoot": "{{cap.key|dirname}}",
+          "indexExecutable": "{{cap.exe}}"
+        }
+      },
+      "facts": {
+        "engine": [
+          "scumm"
+        ]
+      }
+    },
+    {
+      "id": "scumm-data-5",
+      "profile": {
+        "anchor": {
+          "file": "**/COMI.LA0"
+        },
+        "checks": [
+          {
+            "file": "{{anchor.path}}"
+          },
+          {
+            "file": "{{base}}/COMI.LA1"
+          },
+          {
+            "file": "{{base}}/COMI.LA2"
+          },
+          {
+            "dir": "{{base}}/RESOURCE"
+          }
+        ],
+        "params": {
+          "target": "scumm:comi",
+          "dataRoot": "{{anchor.dir|default:\".\"}}"
+        }
+      },
+      "facts": {
+        "engine": [
+          "scumm"
+        ]
+      }
+    },
+    {
+      "id": "fallout-data-1",
+      "profile": {
+        "anchor": {
+          "file": "**/master.dat"
+        },
+        "checks": [
+          {
+            "file": "{{anchor.dir}}/FALLOUTW.EXE",
+            "evidence": true,
+            "label": "FALLOUTW.EXE (Fallout)"
+          },
+          {
+            "file": "{{anchor.dir}}/critter.dat",
+            "label": "critter.dat"
+          },
+          {
+            "dir": "{{anchor.dir}}/data",
+            "label": "data folder"
+          }
+        ],
+        "params": {
+          "dataRoot": {
+            "path": "{{anchor.dir}}"
+          }
+        }
+      },
+      "facts": {
+        "engine": [
+          "fallout"
+        ]
+      }
+    },
+    {
+      "id": "fallout2-data-1",
+      "profile": {
+        "anchor": {
+          "file": "**/master.dat"
+        },
+        "checks": [
+          {
+            "file": "{{anchor.dir}}/fallout2.exe",
+            "evidence": true,
+            "label": "fallout2.exe (Fallout 2)"
+          },
+          {
+            "file": "{{anchor.dir}}/critter.dat",
+            "label": "critter.dat"
+          },
+          {
+            "dir": "{{anchor.dir}}/data",
+            "label": "data folder"
+          }
+        ],
+        "params": {
+          "dataRoot": {
+            "path": "{{anchor.dir}}"
+          }
+        }
+      },
+      "facts": {
+        "engine": [
+          "fallout2"
+        ]
+      }
+    },
+    {
+      "id": "offline-inno",
+      "profile": {
+        "anchor": {
+          "file": "setup_*.exe"
+        },
+        "checks": [
+          {
+            "pe": "{{anchor.path}}"
+          },
+          {
+            "peResource": "{{anchor.path}}",
+            "type": 10,
+            "id": 11111,
+            "hex": "72446c507453cde6d77b0b2a"
+          }
+        ]
+      },
+      "facts": {
+        "installer": [
+          "inno"
+        ]
+      }
+    },
+    {
+      "id": "offline-pkg",
+      "profile": {
+        "anchor": {
+          "file": "*.pkg"
+        },
+        "checks": [
+          {
+            "magic": "{{anchor.path}}",
+            "at": 0,
+            "ascii": "xar!"
+          }
+        ]
+      },
+      "facts": {
+        "installer": [
+          "pkg"
+        ],
+        "os": [
+          "macos"
+        ],
+        "arch": [
+          "x86_64",
+          "arm64"
+        ]
+      }
+    }
+  ],
+  "sleeves": [
+    {
+      "id": "steamless",
+      "version": 1,
+      "folder": "steamless"
+    },
+    {
+      "id": "steamworks-windows",
+      "version": 1,
+      "folder": "steamworks-windows"
+    },
+    {
+      "id": "steamworks-macos",
+      "version": 1,
+      "folder": "steamworks-macos"
+    },
+    {
+      "id": "wine",
+      "version": 1,
+      "folder": "wine"
+    },
+    {
+      "id": "scummvm",
+      "version": 1,
+      "folder": "scummvm"
+    },
+    {
+      "id": "fallout-ce",
+      "version": 1,
+      "folder": "fallout-ce"
+    },
+    {
+      "id": "fallout2-ce",
+      "version": 1,
+      "folder": "fallout2-ce"
+    },
+    {
+      "id": "gog-inno",
+      "version": 1,
+      "folder": "gog-inno"
+    },
+    {
+      "id": "gog-pkg",
+      "version": 1,
+      "folder": "gog-pkg"
+    }
+  ]
 }

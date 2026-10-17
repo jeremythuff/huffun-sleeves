@@ -1,0 +1,224 @@
+{
+  "name": "Classic RPG engine II",
+  "description": "Plays the Windows release of Fallout 2 natively on a Mac with Fallout II Community Edition, an open-source rebuild of the engine that reads the game's own data files. No Wine, no Rosetta.",
+  "runtimes": {
+    "fallout2ce": {
+      "name": "Fallout II Community Edition",
+      "license": "LicenseRef-Sustainable-Use-1.0",
+      "source": "https://github.com/alexbatalov/fallout2-ce/tree/v1.3.0",
+      "pins": [
+        {
+          "version": "1.3.0",
+          "platform": "macos",
+          "import": "fetch",
+          "release": "https://github.com/alexbatalov/fallout2-ce/releases/download/v1.3.0/fallout2-ce-macos.dmg",
+          "releaseSha256": "a1687701c8a482e57ac41acb798da8706c509fca75944466a55eaf00c53a7db3",
+          "treeSha256": "2d60b4d2df6a14307e744f96bf133d6e66a8cb89045c0c22cf6f890e87e27ed9",
+          "root": "Fallout II Community Edition.app",
+          "program": "Fallout II Community Edition.app/Contents/MacOS/fallout2-ce",
+          "deliverAs": "Fallout II Community Edition.app",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/fallout2ce-1.3.0-macos.zip",
+          "archiveSha256": "d931ef0b2bfe20dd9990a0061aeebc83e6d3b50b9897abeb8923e6b517882c9b"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "launch-macos": {
+      "file": "templates/launch-macos.command",
+      "escape": "sh"
+    },
+    "how-macos": {
+      "file": "templates/how-to-play.txt",
+      "escape": "text"
+    }
+  },
+  "detect": {
+    "select": "one",
+    "profiles": [
+      {
+        "name": "Fallout 2 data files",
+        "anchor": {
+          "file": "**/master.dat"
+        },
+        "checks": [
+          {
+            "file": "{{anchor.dir}}/fallout2.exe",
+            "evidence": true,
+            "label": "fallout2.exe (Fallout 2)"
+          },
+          {
+            "file": "{{anchor.dir}}/critter.dat",
+            "label": "critter.dat"
+          },
+          {
+            "dir": "{{anchor.dir}}/data",
+            "label": "data folder"
+          }
+        ],
+        "params": {
+          "dataRoot": {
+            "path": "{{anchor.dir}}"
+          }
+        },
+        "label": "{{anchor.dir|default:\"the game folder\"}}"
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}} (Fallout 2 CE)",
+    "clients": {
+      "macos": {
+        "runtimes": [
+          "fallout2ce"
+        ],
+        "entries": [
+          {
+            "template": "launch-macos",
+            "to": "Play {{title}}.command",
+            "executable": true
+          },
+          {
+            "template": "how-macos",
+            "to": "How to play.txt"
+          },
+          {
+            "original": "",
+            "to": "game"
+          },
+          {
+            "runtime": "fallout2ce",
+            "to": "game/{{params.dataRoot}}/Fallout II Community Edition.app"
+          }
+        ]
+      }
+    }
+  },
+  "format": 2,
+  "id": "fallout2-ce",
+  "version": 1,
+  "preference": 0,
+  "scripts": {},
+  "fixtures": [
+    {
+      "name": "Complete capability data (macos)",
+      "client": "macos",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:engine": [
+          "fallout2"
+        ]
+      },
+      "files": {
+        "master.dat": 1000,
+        "critter.dat": 1000,
+        "fallout2.exe": {
+          "hex": "4d5a90",
+          "size": 4096
+        },
+        "f2_res.ini": {
+          "text": "[MAIN]\n"
+        },
+        "data/.keep": {
+          "text": ""
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [
+          [
+            "fallout2-ce"
+          ]
+        ],
+        "listing": [
+          "How to play.txt\tgenerated\t0644",
+          "Play Synthetic.command\tgenerated\t0755",
+          "game/Fallout II Community Edition.app/Contents/MacOS/fallout2-ce\truntime\t0644",
+          "game/critter.dat\toriginal\t0644",
+          "game/data/.keep\toriginal\t0644",
+          "game/f2_res.ini\toriginal\t0644",
+          "game/fallout2.exe\toriginal\t0644",
+          "game/master.dat\toriginal\t0644",
+          "licenses/Fallout II Community Edition.txt\tgenerated\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "macos",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:engine": [
+          "fallout2"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "accepts": {
+    "engine": {
+      "any": [
+        "fallout2"
+      ]
+    }
+  },
+  "produces": {
+    "engine": {
+      "drop": true
+    },
+    "os": {
+      "set": [
+        "macos"
+      ]
+    },
+    "arch": {
+      "set": [
+        "x86_64",
+        "arm64"
+      ]
+    },
+    "runs32bit": {
+      "drop": true
+    },
+    "graphics": {
+      "drop": true
+    },
+    "drm": {
+      "drop": true
+    },
+    "steamworks": {
+      "drop": true
+    }
+  }
+}

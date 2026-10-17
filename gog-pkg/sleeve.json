@@ -1,0 +1,165 @@
+{
+  "format": 2,
+  "id": "gog-pkg",
+  "version": 1,
+  "name": "Offline Mac package",
+  "description": "Unpacks one flat Mac installer on the member computer without sudo or package scripts, validates a modern app and creates its launcher.",
+  "accepts": {
+    "os": {
+      "any": [
+        "macos"
+      ]
+    },
+    "installer": {
+      "any": [
+        "pkg"
+      ]
+    }
+  },
+  "produces": {
+    "installer": {
+      "drop": true
+    },
+    "arch": {
+      "set": [
+        "x86_64",
+        "arm64"
+      ]
+    },
+    "runs32bit": {
+      "drop": true
+    }
+  },
+  "templates": {
+    "launch": {
+      "file": "templates/play.sh",
+      "escape": "sh"
+    }
+  },
+  "detect": {
+    "profiles": [
+      {
+        "name": "Flat Mac installer",
+        "anchor": {
+          "file": "*.pkg"
+        },
+        "checks": [
+          {
+            "magic": "{{anchor.path}}",
+            "at": 0,
+            "ascii": "xar!"
+          }
+        ],
+        "params": {
+          "installer": {
+            "path": "{{anchor.path}}"
+          }
+        },
+        "label": "{{params.installer}}"
+      }
+    ]
+  },
+  "scripts": {
+    "install": {
+      "macos": [
+        {
+          "file": "scripts/install.sh",
+          "args": [
+            "{{params.installer}}"
+          ]
+        }
+      ]
+    }
+  },
+  "deliver": {
+    "folder": "{{title}}",
+    "clients": {
+      "macos": {
+        "entries": [
+          {
+            "original": "",
+            "to": "game"
+          },
+          {
+            "template": "launch",
+            "to": "Play.command",
+            "executable": true
+          }
+        ]
+      }
+    }
+  },
+  "fixtures": [
+    {
+      "name": "Complete capability data (macos)",
+      "client": "macos",
+      "state": {
+        "os": [
+          "macos"
+        ],
+        "arch": [
+          "arm64",
+          "x86_64"
+        ],
+        "huffun-sleeves:installer": [
+          "pkg"
+        ]
+      },
+      "files": {
+        "program.pkg": {
+          "text": "xar!"
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [
+          [
+            "gog-pkg"
+          ]
+        ],
+        "listing": [
+          "Play.command\tgenerated\t0755",
+          "game/program.pkg\toriginal\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "macos",
+      "state": {
+        "os": [
+          "macos"
+        ],
+        "arch": [
+          "arm64",
+          "x86_64"
+        ],
+        "huffun-sleeves:installer": [
+          "pkg"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ]
+}

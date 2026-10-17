@@ -1,0 +1,65 @@
+[
+  {
+    "id": "fallout2ce-1.3.0-macos",
+    "file": "fallout2ce-1.3.0-macos.zip",
+    "archiveSha256": "d931ef0b2bfe20dd9990a0061aeebc83e6d3b50b9897abeb8923e6b517882c9b",
+    "treeSha256": "2d60b4d2df6a14307e744f96bf133d6e66a8cb89045c0c22cf6f890e87e27ed9",
+    "sourceUrl": "https://github.com/alexbatalov/fallout2-ce/tree/v1.3.0"
+  },
+  {
+    "id": "falloutce-1.1.0-macos",
+    "file": "falloutce-1.1.0-macos.zip",
+    "archiveSha256": "f321d836ecff29d87c1e5ccc84cf440c059c5989c050c0c1ff874bfa6f75086e",
+    "treeSha256": "ef200aa9d8aa923ad2941955272e489c13eedb5956e05d29db7d9a962d80a3c6",
+    "sourceUrl": "https://github.com/alexbatalov/fallout1-ce/tree/v1.1.0"
+  },
+  {
+    "id": "scummvm-2026.3.0-macos",
+    "file": "scummvm-2026.3.0-macos.zip",
+    "archiveSha256": "c0cc5d43787f82c00f615f4579839318364bde1d6ee3e8abb941a965a3f2d5de",
+    "treeSha256": "0a2861f8c98fe6918b30dac3a7ee6cb61c948c968c7fc169789f5fc5dd671542",
+    "sourceUrl": "https://downloads.scummvm.org/frs/scummvm/2026.3.0/scummvm-2026.3.0.tar.xz"
+  },
+  {
+    "id": "scummvm-2026.3.0-windows",
+    "file": "scummvm-2026.3.0-windows.zip",
+    "archiveSha256": "c14237eb024aadee8cf4fc74394373276cb10469d65b8fe425a6662ee32a1d31",
+    "treeSha256": "b584cce4781e7c19a61a97be6a4d047c0c7bfd348f67f7da7046ccafb5354e88",
+    "sourceUrl": "https://downloads.scummvm.org/frs/scummvm/2026.3.0/scummvm-2026.3.0.tar.xz"
+  },
+  {
+    "id": "steamless-3.1.0.5-windows",
+    "file": "steamless-3.1.0.5-windows.zip",
+    "archiveSha256": "3513e41f03eb4a3a7df092fc4ae9e02e5e41f173bcfe85288fb80c665b760371",
+    "treeSha256": "898196fd69e0b59e17afc1489ae606a0c68c14c3a5c5691f44b9d5bff8d39935",
+    "sourceUrl": "https://github.com/atom0s/Steamless/tree/v3.1.0.5"
+  },
+  {
+    "id": "vent-2-macos",
+    "file": "vent-2-macos.zip",
+    "archiveSha256": "51112ec109ed93d6449d708caef550e49690d20eb60a94680ac36498a500fd94",
+    "treeSha256": "429ca5a34127316d6ffc292c01e02839068cb2f07d23a5440ca52cbd4fa83df5",
+    "sourceUrl": "https://example.invalid/vent/source"
+  },
+  {
+    "id": "vent-gbe-fork-2026-09-27-windows",
+    "file": "vent-gbe-fork-2026-09-27-windows.zip",
+    "archiveSha256": "9292ddbb793c4d28c323e9845fb234747d3a08b95e0a78fcc248d26a52bbf4ea",
+    "treeSha256": "3cdb86303c72502a89b1a7d90fcb321fa0a0049a75f8a4730260979d2e85e26d",
+    "sourceUrl": "https://github.com/Detanup01/gbe_fork/tree/release-2026_09_27"
+  },
+  {
+    "id": "wine-11.0.1-macos",
+    "file": "wine-11.0.1-macos.zip",
+    "archiveSha256": "431c7a00adb276f001b166ec30e2fec06522ce46eccc245d0a5e59475704e167",
+    "treeSha256": "eb28037e4095b685691707d4989f129e4075017c03ce41be53bfe4206ce41557",
+    "sourceUrl": "https://dl.winehq.org/wine/source/11.0/wine-11.0.tar.xz"
+  },
+  {
+    "id": "innoextract-1.9-macos",
+    "file": "innoextract-1.9-macos.zip",
+    "archiveSha256": "05dad302f6f5b8137c96b613e89c1dd135df60a3ddf5c41e91512aed163c640a",
+    "treeSha256": "10559a582cc62d186e9cf9eed5c06f5f48efe6370a5e4c3a6986abd02ede5beb",
+    "sourceUrl": "https://constexpr.org/innoextract/"
+  }
+]

@@ -1,0 +1,9 @@
+{{title}}
+
+This is for a development build. Use it at your own risk.
+
+The Steamworks library inside game/ is already the pinned emulator, with offline settings beside it. Open "Play {{title}}.command". It marks the game executable, clears quarantine on this folder, and signs the emulator library for this Mac.
+
+If macOS says it cannot verify "Play {{title}}.command", run it through bash once instead: in Terminal, type bash and a space, drag "Play {{title}}.command" into the window, and press Return. It clears the downloaded-file flag on this folder, so double-clicking works after that. Or approve it in System Settings > Privacy & Security > Open Anyway.
+
+Saves are in the saves folder next to that library.

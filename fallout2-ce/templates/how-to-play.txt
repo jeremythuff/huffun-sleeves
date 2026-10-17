@@ -1,0 +1,9 @@
+{{title}}
+
+Open "Play {{title}}.command". It plays the Windows release of Fallout 2 natively on this Mac with Fallout II Community Edition {{rt.fallout2ce.version}}, an open-source rebuild of the original engine. It reads the game's own data files from the game folder; nothing is emulated.
+
+Saves are in game/data/SAVEGAME, so keep the folder together. Settings (screen size, windowed or full screen) are in the game's own .ini and .cfg files in the game folder.
+
+If macOS says it cannot verify "Play {{title}}.command", run it through bash once instead: in Terminal, type bash and a space, drag "Play {{title}}.command" into the window, and press Return. Or approve it in System Settings > Privacy & Security > Open Anyway.
+
+Fallout II Community Edition is by Alexander Batalov and contributors (https://github.com/alexbatalov/fallout2-ce), under the Sustainable Use License (see licenses/). It is free for personal, non-commercial use.

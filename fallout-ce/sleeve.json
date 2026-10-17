@@ -1,0 +1,224 @@
+{
+  "name": "Classic RPG engine",
+  "description": "Plays the Windows release of Fallout natively on a Mac with Fallout Community Edition, an open-source rebuild of the engine that reads the game's own data files. No Wine, no Rosetta.",
+  "runtimes": {
+    "falloutce": {
+      "name": "Fallout Community Edition",
+      "license": "LicenseRef-Sustainable-Use-1.0",
+      "source": "https://github.com/alexbatalov/fallout1-ce/tree/v1.1.0",
+      "pins": [
+        {
+          "version": "1.1.0",
+          "platform": "macos",
+          "import": "fetch",
+          "release": "https://github.com/alexbatalov/fallout1-ce/releases/download/v1.1.0/fallout-ce-macos.dmg",
+          "releaseSha256": "db8833e4fe452e5cdff16a4c37893be0a4e5f6b473abe5ae4839a3ba61c11a2c",
+          "treeSha256": "ef200aa9d8aa923ad2941955272e489c13eedb5956e05d29db7d9a962d80a3c6",
+          "root": "Fallout Community Edition.app",
+          "program": "Fallout Community Edition.app/Contents/MacOS/fallout-ce",
+          "deliverAs": "Fallout Community Edition.app",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/falloutce-1.1.0-macos.zip",
+          "archiveSha256": "f321d836ecff29d87c1e5ccc84cf440c059c5989c050c0c1ff874bfa6f75086e"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "launch-macos": {
+      "file": "templates/launch-macos.command",
+      "escape": "sh"
+    },
+    "how-macos": {
+      "file": "templates/how-to-play.txt",
+      "escape": "text"
+    }
+  },
+  "detect": {
+    "select": "one",
+    "profiles": [
+      {
+        "name": "Fallout data files",
+        "anchor": {
+          "file": "**/master.dat"
+        },
+        "checks": [
+          {
+            "file": "{{anchor.dir}}/FALLOUTW.EXE",
+            "evidence": true,
+            "label": "FALLOUTW.EXE (Fallout)"
+          },
+          {
+            "file": "{{anchor.dir}}/critter.dat",
+            "label": "critter.dat"
+          },
+          {
+            "dir": "{{anchor.dir}}/data",
+            "label": "data folder"
+          }
+        ],
+        "params": {
+          "dataRoot": {
+            "path": "{{anchor.dir}}"
+          }
+        },
+        "label": "{{anchor.dir|default:\"the game folder\"}}"
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}} (Fallout CE)",
+    "clients": {
+      "macos": {
+        "runtimes": [
+          "falloutce"
+        ],
+        "entries": [
+          {
+            "template": "launch-macos",
+            "to": "Play {{title}}.command",
+            "executable": true
+          },
+          {
+            "template": "how-macos",
+            "to": "How to play.txt"
+          },
+          {
+            "original": "",
+            "to": "game"
+          },
+          {
+            "runtime": "falloutce",
+            "to": "game/{{params.dataRoot}}/Fallout Community Edition.app"
+          }
+        ]
+      }
+    }
+  },
+  "format": 2,
+  "id": "fallout-ce",
+  "version": 1,
+  "preference": 0,
+  "scripts": {},
+  "fixtures": [
+    {
+      "name": "Complete capability data (macos)",
+      "client": "macos",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:engine": [
+          "fallout"
+        ]
+      },
+      "files": {
+        "master.dat": 1000,
+        "critter.dat": 1000,
+        "FALLOUTW.EXE": {
+          "hex": "4d5a90",
+          "size": 4096
+        },
+        "f1_res.ini": {
+          "text": "[MAIN]\n"
+        },
+        "data/.keep": {
+          "text": ""
+        }
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [
+          [
+            "fallout-ce"
+          ]
+        ],
+        "listing": [
+          "How to play.txt\tgenerated\t0644",
+          "Play Synthetic.command\tgenerated\t0755",
+          "game/FALLOUTW.EXE\toriginal\t0644",
+          "game/Fallout Community Edition.app/Contents/MacOS/fallout-ce\truntime\t0644",
+          "game/critter.dat\toriginal\t0644",
+          "game/data/.keep\toriginal\t0644",
+          "game/f1_res.ini\toriginal\t0644",
+          "game/master.dat\toriginal\t0644",
+          "licenses/Fallout Community Edition.txt\tgenerated\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching data",
+      "client": "macos",
+      "state": {
+        "os": [
+          "windows"
+        ],
+        "arch": [
+          "x86"
+        ],
+        "huffun-sleeves:engine": [
+          "fallout"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "accepts": {
+    "engine": {
+      "any": [
+        "fallout"
+      ]
+    }
+  },
+  "produces": {
+    "engine": {
+      "drop": true
+    },
+    "os": {
+      "set": [
+        "macos"
+      ]
+    },
+    "arch": {
+      "set": [
+        "x86_64",
+        "arm64"
+      ]
+    },
+    "runs32bit": {
+      "drop": true
+    },
+    "graphics": {
+      "drop": true
+    },
+    "drm": {
+      "drop": true
+    },
+    "steamworks": {
+      "drop": true
+    }
+  }
+}

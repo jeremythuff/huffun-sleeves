@@ -1,0 +1,11 @@
+{{title}}
+
+Open "Play {{title}}.command". It runs the Windows version of this game with the bundled Wine {{rt.wine.version}}.
+
+The first start sets up a Windows environment in the prefix folder next to it, which takes about a minute. Settings and saves live there, so keep the folder together.
+
+On a Mac with Apple silicon, Wine needs Rosetta 2. If it is missing, the script says how to install it.
+
+If macOS says it cannot verify "Play {{title}}.command", run it through bash once instead: in Terminal, type bash and a space, drag "Play {{title}}.command" into the window, and press Return. Or approve it in System Settings > Privacy & Security > Open Anyway.
+
+Not every Windows game runs under Wine. Games that need Steam running (a Steamworks library without an administrator's approval) are not offered.
