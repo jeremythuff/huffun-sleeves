@@ -307,7 +307,7 @@
   },
   "format": 2,
   "id": "wine",
-  "version": 1,
+  "version": 2,
   "preference": 0,
   "scripts": {
     "postinstall": {
