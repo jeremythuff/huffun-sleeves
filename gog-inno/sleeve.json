@@ -32,10 +32,10 @@
           "platform": "macos",
           "import": "fetch",
           "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/innoextract-1.9-macos.zip",
-          "archiveSha256": "fe25596cc2e30297fd163be56321070ab0c0c322d8fe0d721490c2d4794ce505",
+          "archiveSha256": "05dad302f6f5b8137c96b613e89c1dd135df60a3ddf5c41e91512aed163c640a",
           "release": "https://packages.macports.org/innoextract/innoextract-1.9_2.darwin_20.x86_64.tbz2",
           "releaseSha256": "a1db601b5008ecd33fd0660ecfeca72e065c62b7676afc3d08543ab3a80d912d",
-          "treeSha256": "a93641c614e145c500753787113f67ed62dc8dfd7ac8141da688ca59979632a0",
+          "treeSha256": "10559a582cc62d186e9cf9eed5c06f5f48efe6370a5e4c3a6986abd02ede5beb",
           "root": "innoextract",
           "program": "innoextract/run",
           "deliverAs": "innoextract"
