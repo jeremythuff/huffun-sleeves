@@ -121,7 +121,8 @@
         "params": {
           "exe": {
             "path": "{{anchor.path}}"
-          }
+          },
+          "software": "yes"
         },
         "label": "{{params.exe}}"
       },
@@ -162,13 +163,37 @@
             ],
             "capture": "draw",
             "optional": true
+          },
+          {
+            "glob": "*/*dosbox*.exe",
+            "pick": "first",
+            "capture": "dosbox_exe",
+            "optional": true
+          },
+          {
+            "glob": "*dosbox*.exe",
+            "pick": "first",
+            "capture": "root_dosbox",
+            "optional": true
+          },
+          {
+            "glob": "*/*dosbox*.conf",
+            "pick": "first",
+            "capture": "dosbox_conf",
+            "optional": true
+          },
+          {
+            "glob": "*/*ddraw*.dll",
+            "pick": "first",
+            "capture": "nested_ddraw",
+            "optional": true
           }
         ],
         "params": {
           "exe": {
             "path": "{{anchor.path}}"
           },
-          "software": "{{#if cap.draw}}yes{{else}}no{{/if}}"
+          "software": "{{#if cap.draw}}yes{{else}}{{#if cap.dosbox_exe}}yes{{else}}{{#if cap.root_dosbox}}yes{{else}}{{#if cap.dosbox_conf}}yes{{else}}{{#if cap.nested_ddraw}}yes{{else}}no{{/if}}{{/if}}{{/if}}{{/if}}{{/if}}"
         },
         "label": "{{params.exe}}"
       },
@@ -209,13 +234,43 @@
             ],
             "capture": "draw",
             "optional": true
+          },
+          {
+            "glob": "*/*/*dosbox*.exe",
+            "pick": "first",
+            "capture": "nested_dosbox",
+            "optional": true
+          },
+          {
+            "glob": "*/*dosbox*.exe",
+            "pick": "first",
+            "capture": "dosbox_exe",
+            "optional": true
+          },
+          {
+            "glob": "*/*/*dosbox*.conf",
+            "pick": "first",
+            "capture": "nested_conf",
+            "optional": true
+          },
+          {
+            "glob": "*/*dosbox*.conf",
+            "pick": "first",
+            "capture": "dosbox_conf",
+            "optional": true
+          },
+          {
+            "glob": "*/*/*ddraw*.dll",
+            "pick": "first",
+            "capture": "nested_ddraw",
+            "optional": true
           }
         ],
         "params": {
           "exe": {
             "path": "{{anchor.path}}"
           },
-          "software": "{{#if cap.draw}}yes{{else}}no{{/if}}"
+          "software": "{{#if cap.draw}}yes{{else}}{{#if cap.dosbox_exe}}yes{{else}}{{#if cap.nested_dosbox}}yes{{else}}{{#if cap.dosbox_conf}}yes{{else}}{{#if cap.nested_conf}}yes{{else}}{{#if cap.nested_ddraw}}yes{{else}}no{{/if}}{{/if}}{{/if}}{{/if}}{{/if}}"
         },
         "priority": -10,
         "label": "{{params.exe}}"
