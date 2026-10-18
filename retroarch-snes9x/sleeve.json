@@ -1,0 +1,195 @@
+{
+  "format": 2,
+  "id": "retroarch-snes9x",
+  "version": 1,
+  "name": "RetroArch (Snes9x)",
+  "description": "Plays Super Nintendo ROMs in RetroArch with the Snes9x core on macOS.",
+  "preference": 0,
+  "accepts": {
+    "system": {
+      "any": [
+        "snes"
+      ]
+    }
+  },
+  "produces": {
+    "system": {
+      "drop": true
+    },
+    "os": {
+      "set": [
+        "macos"
+      ]
+    },
+    "arch": {
+      "set": [
+        "arm64",
+        "x86_64"
+      ]
+    }
+  },
+  "runtimes": {
+    "retroarch": {
+      "name": "RetroArch",
+      "license": "GPL-3.0-only",
+      "source": "https://github.com/libretro/RetroArch",
+      "pins": [
+        {
+          "version": "1.22.2",
+          "platform": "macos",
+          "import": "fetch",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/retroarch-1.22.2-macos.zip",
+          "archiveSha256": "2db47f04d72bda21ef464832dfd624e8d9b75bd227c403913ee97e38c2bb3a27",
+          "release": "https://buildbot.libretro.com/stable/1.22.2/apple/osx/universal/RetroArch_Metal.dmg",
+          "releaseSha256": "81b79121ba26d539064ae13b4d0419a120c3d165afbe656cf5f5412b15fdb434",
+          "treeSha256": "32c08e63e98310d1819024d59d890e604bcda9542ef67b45105a534766e3f5d0",
+          "root": "RetroArch.app",
+          "program": "RetroArch.app/Contents/MacOS/RetroArch",
+          "deliverAs": "RetroArch.app"
+        }
+      ]
+    },
+    "snes9x": {
+      "name": "Snes9x",
+      "license": "non-commercial",
+      "source": "https://github.com/snes9xgit/snes9x",
+      "pins": [
+        {
+          "version": "2026.10.17",
+          "platform": "macos",
+          "import": "fetch",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261016/core-snes9x-2026.10.17-macos.zip",
+          "archiveSha256": "4e5336b764a7895cb2757367b3e49ba50895855cc0af284d11464c170d617c84",
+          "release": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/snes9x_libretro.dylib.zip",
+          "releaseSha256": "4e5336b764a7895cb2757367b3e49ba50895855cc0af284d11464c170d617c84",
+          "treeSha256": "9852cfbdb58a36464f10563cfc51260bb622738832815fd128303e1dca718ff7",
+          "root": "cores",
+          "program": "cores/snes9x_libretro.dylib",
+          "deliverAs": "cores"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "play": {
+      "file": "templates/play.sh",
+      "escape": "sh"
+    },
+    "config": {
+      "file": "templates/retroarch.cfg",
+      "escape": "ini"
+    }
+  },
+  "detect": {
+    "profiles": [
+      {
+        "name": "Super Nintendo ROM",
+        "anchor": {
+          "file": "**/*.{sfc,smc,fig}"
+        },
+        "checks": [],
+        "params": {
+          "rom": {
+            "path": "{{anchor.path}}"
+          }
+        },
+        "label": "{{params.rom}}"
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}}",
+    "clients": {
+      "macos": {
+        "runtimes": [
+          "retroarch",
+          "snes9x"
+        ],
+        "entries": [
+          {
+            "original": "",
+            "to": "rom"
+          },
+          {
+            "template": "play",
+            "to": "Play.command",
+            "executable": true
+          },
+          {
+            "template": "config",
+            "to": "retroarch.cfg"
+          },
+          {
+            "runtime": "retroarch"
+          },
+          {
+            "runtime": "snes9x"
+          }
+        ]
+      }
+    }
+  },
+  "fixtures": [
+    {
+      "name": "Super Nintendo ROM (macos)",
+      "client": "macos",
+      "state": {
+        "system": [
+          "snes"
+        ]
+      },
+      "files": {
+        "game.sfc": 1024
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [
+          [
+            "retroarch-snes9x"
+          ]
+        ],
+        "listing": [
+          "Play.command\tgenerated\t0755",
+          "RetroArch.app/Contents/MacOS/RetroArch\truntime\t0644",
+          "cores/snes9x_libretro.dylib\truntime\t0644",
+          "licenses/RetroArch.txt\tgenerated\t0644",
+          "licenses/Snes9x.txt\tgenerated\t0644",
+          "retroarch.cfg\tgenerated\t0644",
+          "rom/game.sfc\toriginal\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching ROM",
+      "client": "macos",
+      "state": {
+        "system": [
+          "snes"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "macos"
+          ],
+          "arch": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "scripts": {}
+}
