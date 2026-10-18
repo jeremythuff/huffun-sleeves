@@ -473,6 +473,11 @@
       "id": "gog-pkg",
       "version": 1,
       "folder": "gog-pkg"
+    },
+    {
+      "id": "retroarch-snes9x",
+      "version": 1,
+      "folder": "retroarch-snes9x"
     }
   ]
 }
