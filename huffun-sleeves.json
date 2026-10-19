@@ -466,7 +466,7 @@
     },
     {
       "id": "gog-inno",
-      "version": 1,
+      "version": 2,
       "folder": "gog-inno"
     },
     {
@@ -478,6 +478,22 @@
       "id": "retroarch-snes9x",
       "version": 1,
       "folder": "retroarch-snes9x"
+    },
+    {
+      "id": "retroarch-snes9x-windows",
+      "version": 1,
+      "folder": "retroarch-snes9x-windows"
     }
-  ]
+  ],
+  "clients": {
+    "windows": {
+      "graphics": [
+        "directdraw"
+      ],
+      "engine": [
+        "fallout",
+        "fallout2"
+      ]
+    }
+  }
 }

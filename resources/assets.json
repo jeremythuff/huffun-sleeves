@@ -61,5 +61,26 @@
     "archiveSha256": "05dad302f6f5b8137c96b613e89c1dd135df60a3ddf5c41e91512aed163c640a",
     "treeSha256": "10559a582cc62d186e9cf9eed5c06f5f48efe6370a5e4c3a6986abd02ede5beb",
     "sourceUrl": "https://constexpr.org/innoextract/"
+  },
+  {
+    "id": "innoextract-1.9-windows",
+    "file": "innoextract-1.9-windows.zip",
+    "archiveSha256": "52c77f13361c6c966762cab34eb418ab1aaf35e3f013595dc024309b0450407b",
+    "treeSha256": "19880f7398bdca6ca7971ba33d11e703f4b9c0e627afc2de031ea44b26fa3432",
+    "sourceUrl": "https://constexpr.org/innoextract/"
+  },
+  {
+    "id": "retroarch-1.22.2-windows",
+    "file": "retroarch-1.22.2-windows.zip",
+    "archiveSha256": "c7e8ee55901252a72ea8e0eb11ca076901025ac39f3cd7a880b635efbe0de469",
+    "treeSha256": "7d2b0f00d0d8e98fc11f7dc482c54dc8d1be9c331b08ab4fa3ebc4da8300761f",
+    "sourceUrl": "https://github.com/libretro/RetroArch/tree/v1.22.2"
+  },
+  {
+    "id": "core-snes9x-2026.10.18-windows",
+    "file": "core-snes9x-2026.10.18-windows.zip",
+    "archiveSha256": "0484f889ff4742a604598ea90ef747c75b67d3c6f6c51cfae840c5f9528d0c04",
+    "treeSha256": "17d74d641d67f7788662391e63eb6445a92bee2fbcd8ee8998653e8dbdb62c04",
+    "sourceUrl": "https://github.com/libretro/snes9x"
   }
 ]

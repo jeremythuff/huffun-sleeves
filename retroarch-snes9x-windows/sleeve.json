@@ -1,0 +1,192 @@
+{
+  "format": 2,
+  "id": "retroarch-snes9x-windows",
+  "version": 1,
+  "name": "RetroArch (Snes9x) for Windows",
+  "description": "Plays Super Nintendo ROMs in RetroArch with the Snes9x core on Windows.",
+  "preference": 0,
+  "accepts": {
+    "system": {
+      "any": [
+        "snes"
+      ]
+    }
+  },
+  "produces": {
+    "system": {
+      "drop": true
+    },
+    "os": {
+      "set": [
+        "windows"
+      ]
+    },
+    "arch": {
+      "set": [
+        "x86_64"
+      ]
+    }
+  },
+  "runtimes": {
+    "retroarch": {
+      "name": "RetroArch",
+      "license": "GPL-3.0-only",
+      "source": "https://github.com/libretro/RetroArch",
+      "pins": [
+        {
+          "version": "1.22.2",
+          "platform": "windows",
+          "import": "fetch",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261019/retroarch-1.22.2-windows.zip",
+          "archiveSha256": "c7e8ee55901252a72ea8e0eb11ca076901025ac39f3cd7a880b635efbe0de469",
+          "release": "https://buildbot.libretro.com/stable/1.22.2/windows/x86_64/RetroArch.7z",
+          "releaseSha256": "b2139b1d0f9d4526dc6b5ce23cbb3efdc766096fa6f2c3df016818b486ac6372",
+          "treeSha256": "7d2b0f00d0d8e98fc11f7dc482c54dc8d1be9c331b08ab4fa3ebc4da8300761f",
+          "root": "RetroArch-Win64",
+          "program": "RetroArch-Win64/retroarch.exe",
+          "deliverAs": "RetroArch"
+        }
+      ]
+    },
+    "snes9x": {
+      "name": "Snes9x",
+      "license": "non-commercial",
+      "source": "https://github.com/snes9xgit/snes9x",
+      "pins": [
+        {
+          "version": "2026.10.18",
+          "platform": "windows",
+          "import": "fetch",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261019/core-snes9x-2026.10.18-windows.zip",
+          "archiveSha256": "0484f889ff4742a604598ea90ef747c75b67d3c6f6c51cfae840c5f9528d0c04",
+          "release": "https://buildbot.libretro.com/nightly/windows/x86_64/latest/snes9x_libretro.dll.zip",
+          "releaseSha256": "bb5f135e2a2071e69df4f3786a17fbf59a94bad8ade75caa4039c1e6c1222fad",
+          "treeSha256": "17d74d641d67f7788662391e63eb6445a92bee2fbcd8ee8998653e8dbdb62c04",
+          "root": "cores",
+          "program": "cores/snes9x_libretro.dll",
+          "deliverAs": "cores"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "play": {
+      "file": "templates/play.cmd",
+      "escape": "cmd"
+    },
+    "config": {
+      "file": "templates/retroarch.cfg",
+      "escape": "ini"
+    }
+  },
+  "detect": {
+    "profiles": [
+      {
+        "name": "Super Nintendo ROM",
+        "anchor": {
+          "file": "**/*.{sfc,smc,fig}"
+        },
+        "checks": [],
+        "params": {
+          "rom": {
+            "path": "{{anchor.path}}"
+          }
+        },
+        "label": "{{params.rom}}"
+      }
+    ]
+  },
+  "deliver": {
+    "folder": "{{title}}",
+    "clients": {
+      "windows": {
+        "runtimes": [
+          "retroarch",
+          "snes9x"
+        ],
+        "entries": [
+          {
+            "original": "",
+            "to": "rom"
+          },
+          {
+            "template": "play",
+            "to": "Play.cmd",
+            "eol": "crlf"
+          },
+          {
+            "template": "config",
+            "to": "retroarch.cfg"
+          },
+          {
+            "runtime": "retroarch"
+          },
+          {
+            "runtime": "snes9x"
+          }
+        ]
+      }
+    }
+  },
+  "fixtures": [
+    {
+      "name": "Super Nintendo ROM (windows)",
+      "client": "windows",
+      "state": {
+        "system": [
+          "snes"
+        ]
+      },
+      "files": {
+        "game.sfc": 1024
+      },
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [
+          [
+            "retroarch-snes9x-windows"
+          ]
+        ],
+        "listing": [
+          "Play.cmd\tgenerated\t0644",
+          "RetroArch/retroarch.exe\truntime\t0644",
+          "cores/snes9x_libretro.dll\truntime\t0644",
+          "licenses/RetroArch.txt\tgenerated\t0644",
+          "licenses/Snes9x.txt\tgenerated\t0644",
+          "retroarch.cfg\tgenerated\t0644",
+          "rom/game.sfc\toriginal\t0644"
+        ]
+      }
+    },
+    {
+      "name": "No matching ROM",
+      "client": "windows",
+      "state": {
+        "system": [
+          "snes"
+        ]
+      },
+      "files": {},
+      "expect": {
+        "state": {
+          "os": [
+            "windows"
+          ],
+          "arch": [
+            "x86_64"
+          ]
+        },
+        "paths": [],
+        "listing": []
+      }
+    }
+  ],
+  "scripts": {}
+}

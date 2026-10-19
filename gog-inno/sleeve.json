@@ -1,9 +1,9 @@
 {
   "format": 2,
   "id": "gog-inno",
-  "version": 1,
+  "version": 2,
   "name": "Offline Windows installer",
-  "description": "Keeps offline installers in the archive; extracts them on Mac with a pinned innoextract, or runs them on Windows. A subsequent Wine path supplies the game launcher on Mac.",
+  "description": "Keeps offline installers in the archive and extracts them with a pinned innoextract: on Mac before Wine, which supplies the launcher; on Windows into the game folder, with a launcher for GOG's primary program.",
   "accepts": {
     "os": {
       "any": [
@@ -39,11 +39,29 @@
           "root": "innoextract",
           "program": "innoextract/run",
           "deliverAs": "innoextract"
+        },
+        {
+          "version": "1.9",
+          "platform": "windows",
+          "import": "fetch",
+          "url": "https://git.huffs.online/huff-admin/huffun-sleeves/releases/download/sleeve-runtimes-20261019/innoextract-1.9-windows.zip",
+          "archiveSha256": "52c77f13361c6c966762cab34eb418ab1aaf35e3f013595dc024309b0450407b",
+          "release": "https://constexpr.org/innoextract/files/innoextract-1.9-windows.zip",
+          "releaseSha256": "6989342c9b026a00a72a38f23b62a8e6a22cc5de69805cf47d68ac2fec993065",
+          "treeSha256": "19880f7398bdca6ca7971ba33d11e703f4b9c0e627afc2de031ea44b26fa3432",
+          "root": "innoextract",
+          "program": "innoextract/innoextract.exe",
+          "deliverAs": "innoextract"
         }
       ]
     }
   },
-  "templates": {},
+  "templates": {
+    "launch-windows": {
+      "file": "templates/launch-windows.cmd",
+      "escape": "cmd"
+    }
+  },
   "detect": {
     "profiles": [
       {
@@ -109,11 +127,21 @@
         ]
       },
       "windows": {
-        "runtimes": [],
+        "runtimes": [
+          "innoextract"
+        ],
         "entries": [
+          {
+            "template": "launch-windows",
+            "to": "Play {{title}}.cmd",
+            "eol": "crlf"
+          },
           {
             "original": "",
             "to": "game"
+          },
+          {
+            "runtime": "innoextract"
           }
         ]
       }
@@ -201,8 +229,11 @@
           ]
         ],
         "listing": [
+          "Play Synthetic.cmd\tgenerated\t0644",
           "game/setup_program-1.bin\toriginal\t0644",
-          "game/setup_program.exe\toriginal\t0644"
+          "game/setup_program.exe\toriginal\t0644",
+          "innoextract/innoextract.exe\truntime\t0644",
+          "licenses/innoextract.txt\tgenerated\t0644"
         ]
       }
     },

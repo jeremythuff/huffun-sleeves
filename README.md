@@ -1,6 +1,6 @@
 # huFFuη repository sleeves
 
-Nine format-2 sleeves cover unwrapping, platform-specific Steamworks emulation,
+Eleven format-2 sleeves cover unwrapping, platform-specific Steamworks emulation,
 Wine translation, ScummVM interpretation, the two Fallout CE interpreters and
 Windows/macOS offline installer handling. Detection is file-based; there are no
 build-title rules. Resolved requirements are dropped; the path records provenance.
@@ -36,3 +36,24 @@ To reproduce the new extractor bundle, use `tools/stage.py` then the app's
 The first uses `resources/innoextract-sources.json` package hashes; the second
 adds notices, strips the unused architecture and creates the deterministic ZIP.
 Both use the application’s ignored `.scratch/assets` staging directory.
+
+## Windows (2026-10-19)
+
+`huffun-sleeves.json` declares what a Windows PC provides natively
+(`clients.windows`): DirectDraw programs and a Windows release's own Fallout
+engines run as archived there, so those builds need no sleeve on Windows
+(huFFuη format 2, "Client facts"). `gog-inno` (version 2) extracts offline
+installers on Windows with a pinned innoextract, as on Mac, instead of running
+GOG's setup program, and writes `Play <title>.cmd` for GOG's primary play
+task. `retroarch-snes9x-windows` plays Super Nintendo ROMs with RetroArch and
+Snes9x on Windows.
+
+Their runtime archives are attached to `releases/tag/sleeve-runtimes-20261019`
+and rebuilt reproducibly with `tools/repack-runtime.py` (stored, fixed dates
+and modes; it prints the archive and tree digests the pins record):
+
+| Archive | Root | From (official) |
+|---|---|---|
+| `innoextract-1.9-windows.zip` | `innoextract` | `innoextract-1.9-windows.zip`, SHA-256 `6989342c…3065` |
+| `retroarch-1.22.2-windows.zip` | `RetroArch-Win64` | `stable/1.22.2/windows/x86_64/RetroArch.7z`, SHA-256 `b2139b1d…6372` (extract with `7z x` first; pass its `RetroArch-Win64` folder) |
+| `core-snes9x-2026.10.18-windows.zip` | `cores` | the 2026-10-18 nightly `snes9x_libretro.dll.zip`, SHA-256 `bb5f135e…2fad` (the nightly URL changes; keep this archive) |
